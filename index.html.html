@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UniPod Makerere – Music Production Bootcamp 2025</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --fl:#FF6B00;--fl2:#FF9A45;
+  --bg:#080B12;--bg2:#0D1220;--card:#0E1525;--card2:#111827;
+  --border:#1E2D45;--text:#E8EDF7;--muted:#5A7090;
+}
+body{background:var(--bg);font-family:'Arial',sans-serif;color:var(--text);
+  min-height:100vh;display:flex;justify-content:center;align-items:flex-start;padding:30px 16px 60px;}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.poster{position:relative;z-index:1;width:720px;max-width:100%;}
+
+/* top bar — full FL orange */
+.brand-bar{height:6px;background:linear-gradient(90deg,var(--fl),#FF9A45,var(--fl));}
+
+/* DAW strip — FL only */
+.daw-strip{background:var(--bg2);border:1px solid var(--border);border-top:none;
+  display:flex;overflow:hidden;height:110px;}
+.fl-panel{flex:1;padding:10px 14px;position:relative;}
+.fl-panel::after{content:'FL STUDIO';position:absolute;top:8px;right:14px;
+  font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,107,0,0.35);}
+.fl-title{font-size:10px;color:var(--fl);font-weight:700;letter-spacing:1px;margin-bottom:7px;}
+.channel-row{display:flex;gap:3px;align-items:center;margin-bottom:4px;}
+.ch-name{font-size:8px;color:var(--muted);width:30px;flex-shrink:0;}
+.steps-row{display:grid;grid-template-columns:repeat(16,1fr);gap:2px;flex:1;}
+.s{height:9px;border-radius:1px;background:#151e2f;}
+.s.a{background:var(--fl);}
+.s.b{background:#FF9A45;opacity:0.8;}
+
+/* piano roll right side */
+.piano-panel{width:220px;flex-shrink:0;border-left:1px solid rgba(255,107,0,0.18);
+  padding:10px 12px;position:relative;overflow:hidden;}
+.piano-panel::after{content:'PIANO ROLL';position:absolute;top:8px;right:10px;
+  font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(255,107,0,0.35);}
+.piano-title{font-size:10px;color:var(--fl2);font-weight:700;letter-spacing:1px;margin-bottom:7px;}
+.pr-row{display:flex;align-items:center;gap:3px;margin-bottom:3px;}
+.pr-key{width:12px;height:8px;border-radius:1px;flex-shrink:0;}
+.key-white{background:#1a2535;}
+.key-black{background:#0a0f1a;}
+.pr-lane{flex:1;height:8px;background:#0a1020;border-radius:1px;position:relative;overflow:hidden;}
+.note{position:absolute;top:1px;height:6px;border-radius:1px;background:var(--fl);}
+
+.main{background:rgba(8,11,18,0.94);border:1px solid var(--border);border-top:none;padding:34px 40px 0;}
+
+.tag-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.tag{font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 12px;border-radius:3px;}
+.tag-fl{background:rgba(255,107,0,0.15);color:var(--fl);border:1px solid rgba(255,107,0,0.3);}
+.tag-uni{background:rgba(255,255,255,0.04);color:var(--muted);border:1px solid var(--border);}
+.tag-live{background:rgba(255,60,60,0.15);color:#FF6060;border:1px solid rgba(255,60,60,0.3);
+  animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.5;}}
+
+.headline{margin-bottom:6px;line-height:1.0;}
+.hl1,.hl3{display:block;font-size:72px;font-weight:900;font-family:'Arial Black',Arial;color:#fff;letter-spacing:-3px;}
+.hl2{display:block;font-size:72px;font-weight:900;font-family:'Arial Black',Arial;letter-spacing:-3px;
+  background:linear-gradient(90deg,var(--fl) 0%,#FFD580 60%,#FF9A45 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+
+.sub-info{display:flex;align-items:center;gap:16px;margin:18px 0 26px;flex-wrap:wrap;}
+.pill-fl{font-size:12px;font-weight:700;letter-spacing:1px;padding:7px 18px;border-radius:20px;
+  background:var(--fl);color:#fff;display:inline-block;}
+.date-chip{margin-left:auto;background:var(--card2);border:1px solid var(--border);
+  border-radius:4px;padding:10px 16px;}
+.date-chip .dc-lbl{font-size:9px;color:var(--fl);font-weight:700;letter-spacing:2px;display:block;}
+.date-chip .dc-val{font-size:13px;color:#fff;font-weight:600;margin-top:2px;}
+
+.divider{height:1px;background:var(--border);margin:0 0 18px;}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:3px;color:var(--muted);margin-bottom:13px;}
+
+.learn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:26px;}
+.learn-card{background:var(--card);border:1px solid var(--border);border-radius:4px;
+  padding:14px 16px;position:relative;overflow:hidden;}
+.learn-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--fl);}
+.learn-card h3{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;}
+.learn-card p{font-size:11px;color:var(--muted);line-height:1.5;}
+
+/* instructors row */
+.instr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:26px;}
+.instr-card{background:var(--card);border:1px solid rgba(255,107,0,0.2);border-radius:4px;
+  padding:16px;display:flex;gap:14px;align-items:center;position:relative;overflow:hidden;}
+.instr-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--fl),transparent);}
+.av{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;font-family:'Arial Black',Arial;flex-shrink:0;
+  border:2px solid var(--fl);}
+.av-a{background:rgba(255,107,0,0.15);color:var(--fl);}
+.av-b{background:rgba(255,154,69,0.15);color:var(--fl2);}
+.instr-name{font-size:14px;font-weight:900;font-family:'Arial Black',Arial;color:#fff;
+  letter-spacing:0.5px;margin-bottom:3px;}
+.instr-tag-lbl{display:inline-block;font-size:9px;font-weight:700;letter-spacing:1px;
+  padding:2px 8px;border-radius:2px;background:rgba(255,107,0,0.15);color:var(--fl);margin-bottom:2px;}
+
+/* bottom section: pricing + QR side by side */
+.bottom-row{display:grid;grid-template-columns:1fr 180px;gap:20px;padding-bottom:30px;align-items:start;}
+.pricing-stack{display:flex;flex-direction:column;gap:8px;}
+.price-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:4px;
+  padding:12px 8px;text-align:center;}
+.price-card .pt{font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px;}
+.price-card .pa{font-size:18px;font-weight:900;font-family:'Arial Black',Arial;color:var(--fl);}
+.price-card .pd{font-size:10px;color:var(--muted);margin-top:2px;}
+.price-card.featured{border:2px solid var(--fl);background:rgba(255,107,0,0.08);}
+.price-card.featured .pa{font-size:20px;color:var(--fl2);}
+.price-card.early .pt{color:var(--fl);font-weight:700;}
+.price-card.early .pa{color:#fff;font-size:18px;}
+
+/* QR block */
+.qr-block{background:var(--card);border:1px solid rgba(255,107,0,0.3);border-radius:8px;
+  padding:16px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;}
+.qr-lbl{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--fl);}
+.qr-img{width:130px;height:130px;border-radius:4px;border:2px solid rgba(255,107,0,0.4);}
+.qr-sub{font-size:9px;color:var(--muted);line-height:1.4;}
+
+/* register button */
+.register-btn{
+  display:block;width:100%;padding:14px;border-radius:4px;
+  background:linear-gradient(90deg,var(--fl),#FF9A45);
+  color:#fff;font-size:13px;font-weight:900;font-family:'Arial Black',Arial;
+  letter-spacing:2px;text-align:center;text-decoration:none;
+  border:none;cursor:pointer;margin-top:8px;
+  transition:opacity .2s,transform .1s;
+}
+.register-btn:hover{opacity:.9;transform:translateY(-1px);}
+
+.cta-bar{display:flex;align-items:center;gap:12px;padding:14px 40px;
+  background:linear-gradient(90deg,rgba(255,107,0,0.12),rgba(255,107,0,0.04));
+  border:1px solid var(--border);border-top:none;flex-wrap:wrap;}
+.cta-loc{font-size:11px;color:var(--muted);}
+.cert-badge{margin-left:auto;background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  border-radius:3px;padding:5px 12px;font-size:10px;color:#fff;font-weight:700;letter-spacing:1px;}
+
+.wave-bottom{height:44px;background:var(--bg2);border:1px solid var(--border);border-top:none;overflow:hidden;}
+#wave-canvas{width:100%;height:100%;}
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+<div class="poster">
+
+  <div class="brand-bar"></div>
+
+  <div class="daw-strip">
+    <div class="fl-panel">
+      <div class="fl-title">STEP SEQUENCER</div>
+      <div class="channel-row">
+        <span class="ch-name">KICK</span>
+        <div class="steps-row">
+          <div class="s a"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+          <div class="s a"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+          <div class="s a"></div><div class="s"></div><div class="s a"></div><div class="s"></div>
+          <div class="s a"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+        </div>
+      </div>
+      <div class="channel-row">
+        <span class="ch-name">SNARE</span>
+        <div class="steps-row">
+          <div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+          <div class="s b"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+          <div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+          <div class="s b"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+        </div>
+      </div>
+      <div class="channel-row">
+        <span class="ch-name">HI-HAT</span>
+        <div class="steps-row">
+          <div class="s b"></div><div class="s"></div><div class="s b"></div><div class="s"></div>
+          <div class="s b"></div><div class="s"></div><div class="s b"></div><div class="s a"></div>
+          <div class="s b"></div><div class="s"></div><div class="s b"></div><div class="s"></div>
+          <div class="s b"></div><div class="s"></div><div class="s b"></div><div class="s"></div>
+        </div>
+      </div>
+      <div class="channel-row">
+        <span class="ch-name">BASS</span>
+        <div class="steps-row">
+          <div class="s a"></div><div class="s"></div><div class="s"></div><div class="s a"></div>
+          <div class="s"></div><div class="s"></div><div class="s a"></div><div class="s"></div>
+          <div class="s"></div><div class="s a"></div><div class="s"></div><div class="s"></div>
+          <div class="s a"></div><div class="s"></div><div class="s"></div><div class="s"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="piano-panel">
+      <div class="piano-title">PIANO ROLL</div>
+      <div class="pr-row">
+        <div class="pr-key key-white"></div>
+        <div class="pr-lane"><div class="note" style="left:5%;width:30%;"></div><div class="note" style="left:55%;width:20%;"></div></div>
+      </div>
+      <div class="pr-row">
+        <div class="pr-key key-black"></div>
+        <div class="pr-lane"><div class="note" style="left:40%;width:15%;opacity:.7;"></div></div>
+      </div>
+      <div class="pr-row">
+        <div class="pr-key key-white"></div>
+        <div class="pr-lane"><div class="note" style="left:0%;width:50%;opacity:.85;"></div><div class="note" style="left:65%;width:30%;opacity:.85;"></div></div>
+      </div>
+      <div class="pr-row">
+        <div class="pr-key key-black"></div>
+        <div class="pr-lane"><div class="note" style="left:20%;width:25%;opacity:.6;"></div></div>
+      </div>
+      <div class="pr-row">
+        <div class="pr-key key-white"></div>
+        <div class="pr-lane"><div class="note" style="left:10%;width:40%;"></div><div class="note" style="left:75%;width:20%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="tag-row">
+      <span class="tag tag-fl">FL STUDIO</span>
+      <span class="tag tag-uni">UNIPOD MAKERERE</span>
+      <span class="tag tag-live">● REGISTRATIONS OPEN</span>
+    </div>
+
+    <div class="headline">
+      <span class="hl1">MUSIC</span>
+      <span class="hl2">PRODUCTION</span>
+      <span class="hl3">BOOTCAMP</span>
+    </div>
+
+    <div class="sub-info">
+      <span class="pill-fl">FL STUDIO</span>
+      <div class="date-chip">
+        <span class="dc-lbl">WHEN</span>
+        <span class="dc-val">JUNE – AUGUST 2025 &nbsp;·&nbsp; 8 WEEKS</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-label">WHAT YOU'LL LEARN</div>
+    <div class="learn-grid">
+      <div class="learn-card">
+        <h3>Beat-Making &amp; Rhythm</h3>
+        <p>Afrobeats, Amapiano, Hip-Hop<br>drum programming &amp; grooves</p>
+      </div>
+      <div class="learn-card">
+        <h3>Sound Design &amp; Melody</h3>
+        <p>Synthesis, sampling, chord progressions<br>and full song arrangement</p>
+      </div>
+      <div class="learn-card">
+        <h3>Mixing &amp; Engineering</h3>
+        <p>EQ, compression, reverb, stereo<br>imaging &amp; professional vocal chains</p>
+      </div>
+      <div class="learn-card">
+        <h3>Mastering &amp; Release</h3>
+        <p>LUFS targets, loudness limiting<br>export for Spotify, YouTube &amp; beyond</p>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="sec-label">YOUR INSTRUCTORS</div>
+    <div class="instr-grid">
+      <div class="instr-card">
+        <div class="av av-a">HK</div>
+        <div>
+          <div class="instr-name">HAFF KAST</div>
+          <div class="instr-tag-lbl">MUSIC PRODUCER</div>
+        </div>
+      </div>
+      <div class="instr-card">
+        <div class="av av-b">KA</div>
+        <div>
+          <div class="instr-name">KIRABO ANDRE</div>
+          <div class="instr-tag-lbl">MUSIC PRODUCER</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="bottom-row">
+      <div class="pricing-stack">
+        <div class="sec-label" style="margin-bottom:10px;">PRICING (UGX)</div>
+        <div class="price-row">
+          <div class="price-card">
+            <div class="pt">STARTER</div>
+            <div class="pa">150k</div>
+            <div class="pd">2 weeks</div>
+          </div>
+          <div class="price-card">
+            <div class="pt">1 MONTH</div>
+            <div class="pa">280k</div>
+            <div class="pd">per student</div>
+          </div>
+          <div class="price-card featured">
+            <div class="pt">★ FULL</div>
+            <div class="pa">480k</div>
+            <div class="pd">8 weeks</div>
+          </div>
+          <div class="price-card early">
+            <div class="pt">EARLY BIRD</div>
+            <div class="pa">380k</div>
+            <div class="pd">book by May 25</div>
+          </div>
+        </div>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfEXpDLNrz8WvIEaSkbEYgWDBNxtqERgMjnwNTki3hvfDx5KQ/viewform?usp=publish-editor" target="_blank" class="register-btn">REGISTER NOW ↗</a>
+      </div>
+
+      <div class="qr-block">
+        <div class="qr-lbl">SCAN TO REGISTER</div>
+        <img class="qr-img" src="data:image/png;base64,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" alt="Scan to register for the bootcamp"/>
+        <div class="qr-sub">UniPod Makerere<br>Innovation Hub · Kampala</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-bar">
+    <span class="cta-loc">UniPod Makerere Innovation Hub · Makerere University · Kampala</span>
+    <span class="cert-badge">CERTIFICATE AWARDED</span>
+  </div>
+
+  <div class="wave-bottom">
+    <canvas id="wave-canvas"></canvas>
+  </div>
+</div>
+
+<script>
+(function(){
+  const bgCanvas=document.getElementById('bg-canvas');
+  const bctx=bgCanvas.getContext('2d');
+  let W,H,t=0;
+  const particles=Array.from({length:100},()=>({
+    x:Math.random()*3000,y:Math.random()*3000,
+    vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,
+    r:Math.random()*1.8+.3,
+    warm:Math.random()>.3,
+    alpha:Math.random()*.35+.08
+  }));
+  function resize(){W=bgCanvas.width=window.innerWidth;H=bgCanvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  function drawBg(){
+    bctx.fillStyle='#080B12';bctx.fillRect(0,0,W,H);
+    for(let r=0;r<H;r+=60){
+      bctx.beginPath();bctx.moveTo(0,r);bctx.lineTo(W,r);
+      bctx.strokeStyle='rgba(255,107,0,0.04)';bctx.lineWidth=.5;bctx.stroke();
+    }
+    for(let c=0;c<W;c+=60){
+      bctx.beginPath();bctx.moveTo(c,0);bctx.lineTo(c,H);
+      bctx.strokeStyle='rgba(255,154,69,0.025)';bctx.lineWidth=.5;bctx.stroke();
+    }
+    const p1=.5+.5*Math.sin(t*.4);
+    const p2=.5+.5*Math.sin(t*.3+1);
+    bctx.beginPath();bctx.arc(W*.25,H*.3,300+p1*25,0,Math.PI*2);
+    bctx.fillStyle=`rgba(255,107,0,${.02+p1*.01})`;bctx.fill();
+    bctx.beginPath();bctx.arc(W*.75,H*.7,260+p2*20,0,Math.PI*2);
+    bctx.fillStyle=`rgba(255,154,69,${.015+p2*.008})`;bctx.fill();
+    bctx.beginPath();bctx.arc(W*.5,H*.5,150,0,Math.PI*2);
+    bctx.fillStyle=`rgba(200,80,0,${.01+.005*Math.sin(t*.7)})`;bctx.fill();
+    particles.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      bctx.beginPath();bctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      bctx.fillStyle=p.warm?`rgba(255,107,0,${p.alpha})`:`rgba(255,154,69,${p.alpha*.7})`;
+      bctx.fill();
+    });
+    t+=.012;requestAnimationFrame(drawBg);
+  }
+  drawBg();
+  const wc=document.getElementById('wave-canvas');
+  const wctx=wc.getContext('2d');
+  let wt=0;
+  function sizeWave(){wc.width=wc.offsetWidth*2;wc.height=wc.offsetHeight*2;wctx.scale(2,2);}
+  setTimeout(sizeWave,50);
+  function drawWave(){
+    const W2=wc.offsetWidth,H2=wc.offsetHeight;
+    if(!W2||!H2){wt+=.04;requestAnimationFrame(drawWave);return;}
+    wctx.clearRect(0,0,W2,H2);wctx.fillStyle='#0D1220';wctx.fillRect(0,0,W2,H2);
+    [{col:'rgba(255,107,0,0.75)',off:0,amp:12},{col:'rgba(255,154,69,0.6)',off:Math.PI*.7,amp:8},{col:'rgba(200,60,0,0.4)',off:Math.PI*.3,amp:5}].forEach(({col,off,amp})=>{
+      wctx.beginPath();
+      for(let x=0;x<=W2;x++){
+        const y=H2/2+Math.sin(x*.025+wt+off)*amp+Math.sin(x*.05+wt*1.4+off)*(amp*.4);
+        x===0?wctx.moveTo(x,y):wctx.lineTo(x,y);
+      }
+      wctx.strokeStyle=col;wctx.lineWidth=1.5;wctx.stroke();
+    });
+    wt+=.04;requestAnimationFrame(drawWave);
+  }
+  drawWave();
+  setInterval(()=>{
+    document.querySelectorAll('.s.a').forEach(el=>{
+      if(Math.random()>.6)el.style.opacity=el.style.opacity==='0.4'?'1':'0.4';
+    });
+  },160);
+})();
+</script>
+</body>
+</html>
